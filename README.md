@@ -276,3 +276,51 @@ sudo chown -R $USER:$USER .
 ## 📄 Licencia
 
 ISC
+
+## Entornos de Desarrollo
+
+### Desarrollo Local
+
+Para desarrollo local, el proyecto utiliza Docker Compose para gestionar la API y la base de datos MongoDB:
+
+1. Clona el repositorio:
+```bash
+git clone <tu-repositorio>
+cd ecartpay-test
+```
+
+2. Crea un archivo `.env` basado en `.env.example`:
+```bash
+cp .env.example .env
+```
+
+3. Inicia los servicios con Docker Compose:
+```bash
+docker-compose up
+```
+
+La API estará disponible en `http://localhost:5000` y MongoDB en `mongodb://localhost:27017/catalog_db`
+
+### Producción (Render + MongoDB Atlas)
+
+Para el despliegue en producción, utilizamos:
+- **Render** para hospedar la API
+- **MongoDB Atlas** para la base de datos
+
+#### Configuración de MongoDB Atlas:
+
+1. Crea una cuenta en [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
+2. Crea un nuevo cluster (tier gratuito M0)
+3. En "Security" → "Database Access", crea un usuario
+4. En "Security" → "Network Access", permite acceso desde cualquier IP (0.0.0.0/0)
+5. Obtén tu URL de conexión de MongoDB Atlas
+
+#### Despliegue en Render:
+
+1. Conecta tu repositorio de GitHub a Render
+2. Crea un nuevo Web Service
+3. Configura las siguientes variables de entorno en el dashboard de Render:
+   - `MONGODB_URI`: URL de conexión de MongoDB Atlas
+   - Las demás variables están configuradas en `render.yaml`
+
+El servicio se desplegará automáticamente cuando hagas push a la rama principal.

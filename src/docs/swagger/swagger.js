@@ -11,11 +11,23 @@ const options = {
     servers: [
       {
         url: process.env.NODE_ENV === 'production' 
-          ? process.env.RENDER_EXTERNAL_URL || 'https://ecartpay-api.onrender.com'
+          ? 'https://ecartpay-api.onrender.com'  // URL fija de producción
           : 'http://localhost:5000',
         description: process.env.NODE_ENV === 'production' ? 'Servidor de producción' : 'Servidor de desarrollo'
       }
-    ]
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    security: [{
+      bearerAuth: []
+    }]
   },
   apis: ['./src/routes/*.js']
 };

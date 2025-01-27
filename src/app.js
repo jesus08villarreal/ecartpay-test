@@ -1,35 +1,48 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const { limiter, helmet, mongoSanitize, corsOptions } = require('./middlewares/security.middleware');
-const sanitizeMiddleware = require('./middlewares/sanitize.middleware');
-const errorHandler = require('./middlewares/errorHandler');
-const swagger = require('./config/swagger');
+const { limiter, helmet, mongoSanitize } = require('./middlewares/security.middleware');
+const swaggerDocs = require('./docs/swagger/swagger');
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
-// Middlewares
+// Configuración de seguridad
 app.use(helmet());
 app.use(mongoSanitize());
 app.use(limiter);
-app.use(cors(corsOptions));
-app.use(sanitizeMiddleware);
-app.use(bodyParser.json({
-  limit: '10kb'
-}));
-app.use(bodyParser.urlencoded({
-  extended: true,
-  limit: '10kb'
+
+// Configuración de CORS
+app.use(cors({
+  origin: '*', // Permite todas las origenes en desarrollo
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Swagger UI
-app.use('/api-docs', swagger.serve, swagger.setup);
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Documentación Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  swaggerOptions: {
+    persistAuthorization: true
+  }
+}));
 
 // Rutas
 app.use('/api/v1/auth', require('./routes/auth.routes'));
 app.use('/api/v1/products', require('./routes/products.routes'));
 
-// Manejador de errores global
-app.use(errorHandler);
+// Manejo de errores
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Error interno del servidor',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
 
 module.exports = app; 

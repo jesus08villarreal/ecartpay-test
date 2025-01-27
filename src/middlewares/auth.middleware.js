@@ -4,7 +4,6 @@ const AccessToken = require('../models/AccessToken');
 
 // Obtener JWT_SECRET con valor por defecto
 const JWT_SECRET = process.env.JWT_SECRET || 'temporary_secret_key_123456';
-console.log('JWT_SECRET:', JWT_SECRET);
 
 const authMiddleware = async (req, res, next) => {
   try {

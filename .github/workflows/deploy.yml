@@ -6,11 +6,14 @@ on:
       - main
 
 jobs:
-  deploy:
+  test-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Create package-lock.json
+        run: npm install --package-lock-only
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

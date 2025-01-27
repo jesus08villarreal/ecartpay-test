@@ -24,6 +24,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, {
 // Rutas
 app.use('/api/v1/auth', require('./routes/auth.routes'));
 app.use('/api/v1/products', require('./routes/products.routes'));
+app.use('/api/v1/seed', require('./routes/seed.routes'));
 
 // Manejo de errores
 app.use((err, req, res, next) => {

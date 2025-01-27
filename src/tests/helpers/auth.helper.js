@@ -12,20 +12,23 @@ const createTestUser = async (userData = {}) => {
   const user = new User({ ...defaultUser, ...userData });
   await user.save();
 
+  const jwtSecret = process.env.JWT_SECRET || 'test_secret_key_123';
+  
   const token = jwt.sign(
     { userId: user._id, role: user.role },
-    process.env.JWT_SECRET || 'test-secret',
+    jwtSecret,
     { expiresIn: '24h' }
   );
 
   const accessToken = new AccessToken({
     token,
     userId: user._id,
+    isValid: true,
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
   });
   await accessToken.save();
 
-  return { user, token };
+  return { user, token: `Bearer ${token}` };
 };
 
 module.exports = {

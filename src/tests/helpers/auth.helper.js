@@ -6,14 +6,14 @@ const createTestUser = async (userData = {}) => {
   const defaultUser = {
     email: 'test@example.com',
     password: 'password123',
-    role: 'user'
+    role: 'admin'
   };
 
   const user = new User({ ...defaultUser, ...userData });
   await user.save();
 
   const token = jwt.sign(
-    { userId: user._id },
+    { userId: user._id, role: user.role },
     process.env.JWT_SECRET || 'test-secret',
     { expiresIn: '24h' }
   );

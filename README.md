@@ -30,9 +30,11 @@ npm run docker:dev:build
 npm run docker:dev
 ```
 
-4. **Crear usuario admin inicial:**
+4. **Crear usuario admin inicial y productos de prueba:**
 ```bash
 npm run docker:seed
+npm run seed:products
+
 ```
 
 Credenciales por defecto:
@@ -226,6 +228,7 @@ CORS_ORIGIN=http://...      # Origen permitido para CORS
 - `npm run seed`: Crear datos iniciales
 - `npm run db:backup`: Crear backup de BD
 - `npm run db:restore`: Restaurar backup de BD
+- `npm run seed:products`: Crear productos de prueba
 
 ## 🏗️ Estructura del Proyecto
 

@@ -1,22 +1,12 @@
 const express = require('express');
-const cors = require('cors');
-const { limiter, helmet, mongoSanitize } = require('./middlewares/security.middleware');
+const { configSecurity } = require('./middlewares/security.middleware');
 const swaggerDocs = require('./docs/swagger/swagger');
 const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
-// Configuración de seguridad
-app.use(helmet());
-app.use(mongoSanitize());
-app.use(limiter);
-
-// Configuración de CORS
-app.use(cors({
-  origin: '*', // Permite todas las origenes en desarrollo
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Aplicar configuraciones de seguridad
+configSecurity(app);
 
 // Middlewares
 app.use(express.json());

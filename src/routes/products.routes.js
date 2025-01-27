@@ -2,23 +2,27 @@ const router = require('express').Router();
 const productsController = require('../controllers/productsController');
 const authMiddleware = require('../middlewares/auth.middleware');
 const adminMiddleware = require('../middlewares/admin.middleware');
+const apiKeyMiddleware = require('../middlewares/apiKey.middleware');
 const { validateSchema } = require('../middlewares/validation.middleware');
 const { productSchema } = require('../utils/validationSchemas');
 
-router.use(authMiddleware);
+// Rutas públicas (requieren API Key)
+router.get('/', apiKeyMiddleware, productsController.getAllProducts);
+router.get('/:id', apiKeyMiddleware, productsController.getProductById);
 
-// Rutas públicas (requieren autenticación)
-router.get('/', productsController.getAllProducts);
-router.get('/:id', productsController.getProductById);
-
-// Rutas de admin
-router.post('/', adminMiddleware, validateSchema(productSchema), productsController.createProduct);
-router.put('/:id', adminMiddleware, validateSchema(productSchema), productsController.updateProduct);
-router.delete('/:id', adminMiddleware, productsController.deleteProduct);
+// Rutas protegidas (requieren autenticación y rol de admin)
+router.post('/', authMiddleware, adminMiddleware, validateSchema(productSchema), productsController.createProduct);
+router.put('/:id', authMiddleware, adminMiddleware, validateSchema(productSchema), productsController.updateProduct);
+router.delete('/:id', authMiddleware, adminMiddleware, productsController.deleteProduct);
 
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     ApiKeyAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: x-api-key
  *   schemas:
  *     Product:
  *       type: object
@@ -53,7 +57,7 @@ router.delete('/:id', adminMiddleware, productsController.deleteProduct);
  *     summary: Obtener todos los productos
  *     tags: [Products]
  *     security:
- *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -110,7 +114,7 @@ router.delete('/:id', adminMiddleware, productsController.deleteProduct);
  *     summary: Obtener un producto por ID
  *     tags: [Products]
  *     security:
- *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id

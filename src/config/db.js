@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    // Usar MONGODB_URI (proporcionado por Heroku) o MONGO_URI local
+    // Usar MONGODB_URI o MONGO_URI local
     const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
     await mongoose.connect(mongoUri);
     console.log('✅ MongoDB conectado exitosamente');

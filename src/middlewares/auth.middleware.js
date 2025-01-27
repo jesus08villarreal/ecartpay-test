@@ -2,6 +2,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const AccessToken = require('../models/AccessToken');
 
+// Obtener JWT_SECRET con valor por defecto
+const JWT_SECRET = process.env.JWT_SECRET || 'temporary_secret_key_123456';
+console.log('JWT_SECRET:', JWT_SECRET);
+
 const authMiddleware = async (req, res, next) => {
   try {
     // 1. Obtener el token del header
@@ -30,7 +34,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     // 3. Verificar y decodificar el token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     // 4. Buscar el usuario
     const user = await User.findById(decoded.userId);

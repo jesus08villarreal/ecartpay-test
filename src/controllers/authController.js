@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const AccessToken = require('../models/AccessToken');
 
+// Obtener JWT_SECRET con valor por defecto
+const JWT_SECRET = process.env.JWT_SECRET || 'temporary_secret_key_123456';
+console.log('JWT_SECRET:', JWT_SECRET);
 const authController = {
   // Registro de usuarios
   register: async (req, res, next) => {
@@ -25,7 +28,7 @@ const authController = {
       // Generar token
       const token = jwt.sign(
         { userId: user._id },
-        process.env.JWT_SECRET,
+        JWT_SECRET,
         { expiresIn: '24h' }
       );
 
@@ -80,7 +83,7 @@ const authController = {
       // Generar token
       const token = jwt.sign(
         { userId: user._id },
-        process.env.JWT_SECRET,
+        JWT_SECRET,
         { expiresIn: '24h' }
       );
 
